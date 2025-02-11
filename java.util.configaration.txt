@@ -1,0 +1,415 @@
+//LinearRegration
+
+import numpy as np
+from sklearn.linear_model import LinearRegression
+
+# Sample data
+X = np.array([[1], [2], [3], [4], [5]])
+y = np.array([1, 3, 2, 3, 5])
+
+# Create and fit the model
+model = LinearRegression()
+model.fit(X, y)
+
+# Make predictions
+predictions = model.predict(X)
+
+print("Coefficients:", model.coef_)
+print("Intercept:", model.intercept_)
+print("Predictions:", predictions)
+
+# Plot the data and regression line
+plt.scatter(X, y, color='blue', label='Data Points')
+plt.plot(X, predictions, color='red', linewidth=2, label='Regression Line')
+plt.xlabel('X')
+plt.ylabel('y')
+plt.title('Linear Regression Plot')
+plt.legend()
+plt.show()
+
+
+
+
+
+
+
+//Non-Linear Regration
+
+import numpy as np
+from scipy.optimize import curve_fit
+import matplotlib.pyplot as plt
+
+# Define the non-linear function
+def func(x, a, b, c):
+    return a * np.exp(b * x) + c
+
+# Generate synthetic data
+x_data = np.linspace(0, 4, 50)
+y_data = func(x_data, 2.5, 1.3, 0.5) + 0.2 * np.random.normal(size=len(x_data))
+
+# Fit the model
+popt, pcov = curve_fit(func, x_data, y_data)
+
+# Plot the data and the fit
+plt.scatter(x_data, y_data, label='Data')
+plt.plot(x_data, func(x_data, *popt), label='Fit', color='red')
+plt.legend()
+plt.show()
+
+
+
+
+
+//Polynomial Regartion
+
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.preprocessing import PolynomialFeatures
+from sklearn.linear_model import LinearRegression
+
+# Sample data
+X = np.array([1, 2, 3, 4, 5, 6, 7, 8, 9]).reshape(-1, 1)
+y = np.array([1, 4, 9, 16, 25, 36, 49, 64, 81])
+
+# Transforming data to include polynomial features
+poly = PolynomialFeatures(degree=2)
+X_poly = poly.fit_transform(X)
+
+# Fitting the model
+model = LinearRegression()
+model.fit(X_poly, y)
+
+# Predicting
+y_pred = model.predict(X_poly)
+
+# Plotting
+plt.scatter(X, y, color='blue')
+plt.plot(X, y_pred, color='red')
+plt.title('Polynomial Regression')
+plt.xlabel('X')
+plt.ylabel('y')
+plt.show()
+
+
+
+
+
+
+//Naive Bayers Clasification
+
+import pandas as pd
+df = pd.read_csv('/content/drive/MyDrive/dataset_for_Naive_Bayes.csv')
+# Import label encoder
+from sklearn import preprocessing
+
+# label_encoder object knows
+# how to understand word labels.
+label_encoder = preprocessing.LabelEncoder()
+
+# Encode labels in column 'species'.
+df['Outlook']= label_encoder.fit_transform(df['Outlook'])
+df['Outlook'].unique()
+df['Temperature']= label_encoder.fit_transform(df['Temperature'])
+df['Temperature'].unique()
+df['Humidity']= label_encoder.fit_transform(df['Humidity'])
+df['Humidity'].unique()
+df['Windy']= label_encoder.fit_transform(df['Windy'])
+df['Windy'].unique()
+df['Play Golf']= label_encoder.fit_transform(df['Play Golf'])
+df['Play Golf'].unique()
+df.to_csv('file1_NB.csv')
+import numpy as np
+df1=np.array(df)
+print(df1)
+df1=df1[:,1:6]
+print(df1)
+X=df1[:,0:4]
+y=df1[:,4]
+# splitting X and y into training and testing sets
+from sklearn.model_selection import train_test_split
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.4, random_state=1)
+import numpy as np
+from sklearn.naive_bayes import GaussianNB
+from sklearn import metrics
+
+# Train the Naive Bayes model
+model = GaussianNB()
+model.fit(X_train, y_train)
+
+# Predict the test data
+y_prediction = model.predict(X_test)
+print("Predicted class:", y_prediction)
+print("Gaussian Naive Bayes model accuracy(in %):", metrics.accuracy_score(y_test, y_prediction)*100)
+# Predict the single test data point
+# Single test data point
+X1=np.array([[1, 1, 0, 0]])
+
+prediction = model.predict(X1)
+print("Predicted class:", prediction[0])
+#t_SNE in 2D after classification
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.manifold import TSNE
+
+#print(X_train.shape, y_train.shape)
+#print(X_test.shape, y_test.shape)
+
+#reduce dimention
+#X_Tr=X_train.reshape(9,-1)
+#X_Te=X_test.reshape(5,-1)
+
+#print(X_Tr.shape, y_train.shape)
+#print(X_Te.shape, y_test.shape)
+
+# Check and set perplexity
+n_samples = X.shape[0]
+perplexity = min(30, n_samples //3)
+
+tsne=TSNE(n_components=2,perplexity=perplexity, random_state=42)
+X_tsne=tsne.fit_transform(X)
+
+#j=['No','Yes']
+
+#plot in 2D visulization
+# Plot the t-SNE result
+plt.figure(figsize=(8, 6))
+plt.scatter(X_tsne[:, 0], X_tsne[:, 1], c=y, cmap='rainbow', edgecolors='k')
+plt.title('t-SNE Visualization of the Dataset')
+plt.xlabel('t-SNE feature 1')
+plt.ylabel('t-SNE feature 2')
+plt.colorbar()
+plt.show()
+
+
+
+
+
+
+//logisticRegration
+import numpy as np
+import matplotlib.pyplot as plt
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
+
+#importing datasets
+data_set= pd.read_csv('/content/drive/MyDrive/user_data.csv')
+
+#Extracting Independent and dependent Variable
+X= data_set.iloc[:, [2,3]].values
+y= data_set.iloc[:, 4].values
+
+# Split the dataset into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+
+# Create and train the logistic regression model
+model = LogisticRegression()
+model.fit(X_train, y_train)
+
+# Make predictions
+y_pred = model.predict(X_test)
+
+# Evaluate the model
+accuracy = accuracy_score(y_test, y_pred)
+conf_matrix = confusion_matrix(y_test, y_pred)
+class_report = classification_report(y_test, y_pred)
+
+print(f"Accuracy: {accuracy}")
+print("Confusion Matrix:")
+print(conf_matrix)
+print("Classification Report:")
+print(class_report)
+
+# Visualize the decision boundary
+plt.scatter(X_test[:, 0], X_test[:, 1], c=y_test, cmap='rainbow', edgecolors='k')
+ax = plt.gca()
+xlim = ax.get_xlim()
+ylim = ax.get_ylim()
+
+xx, yy = np.meshgrid(np.linspace(xlim[0], xlim[1], 30), np.linspace(ylim[0], ylim[1], 30))
+Z = model.predict(np.c_[xx.ravel(), yy.ravel()])
+Z = Z.reshape(xx.shape)
+
+ax.contourf(xx, yy, Z, alpha=0.3, cmap='rainbow')
+plt.title('Logistic Regression Decision Boundary')
+plt.show()
+
+
+
+
+
+//multi-valued/multinomial logistic regression
+
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.datasets import make_classification
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import classification_report, confusion_matrix
+
+#importing datasets
+data_set= pd.read_csv('/content/drive/MyDrive/user_data1.csv')
+
+#Extracting Independent and dependent Variable
+X= data_set.iloc[:, [1,2]].values
+y= data_set.iloc[:, 3].values
+
+# Split the dataset into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+
+# Create and train the multinomial logistic regression model
+model = LogisticRegression(multi_class='multinomial', solver='lbfgs', max_iter=200)
+model.fit(X_train, y_train)
+
+# Make predictions
+y_pred = model.predict(X_test)
+
+# Evaluate the model
+print("Classification Report:")
+print(classification_report(y_test, y_pred))
+
+print("Confusion Matrix:")
+print(confusion_matrix(y_test, y_pred))
+
+# Plot decision boundaries
+def plot_decision_boundaries(X, y, model):
+    h = .02  # Step size in the mesh
+    x_min, x_max = X[:, 0].min() - 1, X[:, 0].max() + 1
+    y_min, y_max = X[:, 1].min() - 1, X[:, 1].max() + 1
+    xx, yy = np.meshgrid(np.arange(x_min, x_max, h),
+                         np.arange(y_min, y_max, h))
+    Z = model.predict(np.c_[xx.ravel(), yy.ravel()])
+    Z = Z.reshape(xx.shape)
+    plt.contourf(xx, yy, Z, alpha=0.8, cmap=plt.cm.Spectral)
+
+    # Plot also the training points
+    plt.scatter(X[:, 0], X[:, 1], c=y, edgecolors='k', cmap=plt.cm.Spectral)
+    plt.xlim(xx.min(), xx.max())
+    plt.ylim(yy.min(), yy.max())
+    plt.title("Decision Boundary for Multinomial Logistic Regression")
+    plt.show()
+
+plot_decision_boundaries(X_test, y_test, model)
+
+
+
+
+//FeedFoward
+
+import numpy as np
+from sklearn.neural_network import MLPClassifier
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score, log_loss
+
+# Generate synthetic data
+X = np.random.rand(1000, 10)  # 1000 samples, 10 features
+y = np.random.randint(2, size=1000)  # Binary target
+
+# Split the data into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Create a neural network model
+model = MLPClassifier(hidden_layer_sizes=(64,), activation='relu', solver='adam', max_iter=10, batch_size=32, random_state=42)
+
+# Train the model
+model.fit(X_train, y_train)
+
+# Evaluate the model
+y_pred = model.predict(X_test)
+y_pred_proba = model.predict_proba(X_test)[:, 1]
+
+accuracy = accuracy_score(y_test, y_pred)
+loss = log_loss(y_test, y_pred_proba)
+
+print(f"Loss: {loss}, Accuracy: {accuracy}")
+
+
+
+
+
+
+
+//single layer pceptron
+
+import numpy as np
+from sklearn.neural_network import MLPClassifier
+from sklearn.metrics import accuracy_score, log_loss
+
+# Generate synthetic data (OR logic gate)
+X = np.array([[0, 0], [0, 1], [1, 0], [1, 1]])
+y = np.array([0, 1, 1, 1])  # OR logic gate
+
+# Create a single-layer perceptron model using MLPClassifier
+# We use 1 hidden layer with 1 neuron and sigmoid activation
+model = MLPClassifier(
+    hidden_layer_sizes=(1,),  # Single hidden layer with 1 neuron
+    activation='logistic',    # Sigmoid activation
+    solver='adam',            # Adam optimizer
+    learning_rate_init=0.01,  # Learning rate
+    max_iter=100,             # Number of epochs
+    random_state=42
+)
+
+# Train the model
+model.fit(X, y)
+
+# Evaluate the model
+y_pred = model.predict(X)
+y_pred_proba = model.predict_proba(X)[:, 1]  # Probabilities for class 1
+
+loss = log_loss(y, y_pred_proba)  # Binary cross-entropy loss
+accuracy = accuracy_score(y, y_pred)
+
+print(f"Loss: {loss}, Accuracy: {accuracy}")
+
+# Make predictions
+print("Predictions:")
+print(y_pred_proba)
+
+
+
+
+
+//multi-layer pceptron
+
+import numpy as np
+from sklearn.neural_network import MLPClassifier
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score, log_loss
+
+# Generate synthetic data
+X = np.random.rand(1000, 10)  # 1000 samples, 10 features
+y = np.random.randint(2, size=1000)  # Binary target
+
+# Split the data into training and testing sets (optional, but good practice)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Create a multi-layer perceptron model
+model = MLPClassifier(
+    hidden_layer_sizes=(64, 32),  # Two hidden layers with 64 and 32 neurons
+    activation='relu',            # ReLU activation for hidden layers
+    solver='adam',                # Adam optimizer
+    learning_rate_init=0.001,     # Learning rate
+    max_iter=50,                  # Number of epochs
+    batch_size=32,                # Batch size
+    random_state=42,              # Random seed for reproducibility
+    verbose=1                     # Print progress during training
+)
+
+# Train the model
+model.fit(X_train, y_train)
+
+# Evaluate the model
+y_pred = model.predict(X_test)
+y_pred_proba = model.predict_proba(X_test)[:, 1]  # Probabilities for class 1
+
+loss = log_loss(y_test, y_pred_proba)  # Binary cross-entropy loss
+accuracy = accuracy_score(y_test, y_pred)
+
+print(f"Loss: {loss}, Accuracy: {accuracy}")
+
+# Make predictions
+print("Predictions:")
+print(y_pred_proba)
